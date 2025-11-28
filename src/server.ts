@@ -10,7 +10,7 @@ import {
   NewTaskInput,
 } from "./tasksRepository";
 
-import {  generateToken, validateUser } from "./auth";
+import { authMiddleware, generateToken, validateUser } from "./auth";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-app.get("/demo-item", (req: Request, res: Response) => {
+app.get("/demo-item", authMiddleware, (req: Request, res: Response) => {
   res.json({
     id: 1,
     title: "Demo item",
@@ -27,12 +27,12 @@ app.get("/demo-item", (req: Request, res: Response) => {
   });
 });
 
-app.get("/tasks", (req: Request, res: Response) => {
+app.get("/tasks", authMiddleware, (req: Request, res: Response) => {
   const tasks = getAllTasks();
   res.json(tasks);
 });
 
-app.get("/tasks/:id", (req: Request, res: Response) => {
+app.get("/tasks/:id", authMiddleware, (req: Request, res: Response) => {
   const id = Number(req.params.id);
   const task = getTaskById(id);
 
@@ -44,7 +44,7 @@ app.get("/tasks/:id", (req: Request, res: Response) => {
   res.json(task);
 });
 
-app.post("/tasks", (req: Request, res: Response) => {
+app.post("/tasks", authMiddleware, (req: Request, res: Response) => {
   const { title, description, completed } = req.body;
 
   if (!title || typeof title !== "string") {
@@ -56,7 +56,7 @@ app.post("/tasks", (req: Request, res: Response) => {
   res.status(201).json(task);
 });
 
-app.put("/tasks/:id", (req: Request, res: Response) => {
+app.put("/tasks/:id", authMiddleware, (req: Request, res: Response) => {
   const id = Number(req.params.id);
   const { title, description, completed } = req.body;
 
@@ -70,7 +70,7 @@ app.put("/tasks/:id", (req: Request, res: Response) => {
   res.json(updated);
 });
 
-app.delete("/tasks/:id", (req: Request, res: Response) => {
+app.delete("/tasks/:id", authMiddleware, (req: Request, res: Response) => {
   const id = Number(req.params.id);
   const deleted = deleteTask(id);
 
@@ -82,7 +82,7 @@ app.delete("/tasks/:id", (req: Request, res: Response) => {
   res.status(204).send();
 });
 
-app.post("/tasks/seed", (req: Request, res: Response) => {
+app.post("/tasks/seed", authMiddleware, (req: Request, res: Response) => {
   const tasksInput = req.body as NewTaskInput[];
 
   if (!Array.isArray(tasksInput)) {
