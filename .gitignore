@@ -1,0 +1,20 @@
+# Dependencias
+node_modules/
+
+# Build de TypeScript
+dist/
+
+# Ejercicios locales (no forman parte de la entrega)
+ejercicios/
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+
+# Entorno
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/
