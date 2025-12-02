@@ -24,6 +24,8 @@ app.get("/demo-item", authMiddleware, (req: Request, res: Response) => {
     title: "Demo item",
     description: "",
     completed: false,
+    latitude: 0,
+    longitude: 0,
   });
 });
 
@@ -45,22 +47,34 @@ app.get("/tasks/:id", authMiddleware, (req: Request, res: Response) => {
 });
 
 app.post("/tasks", authMiddleware, (req: Request, res: Response) => {
-  const { title, description, completed } = req.body;
+  const { title, description, completed, latitude, longitude } = req.body;
 
   if (!title || typeof title !== "string") {
     res.status(400).json({ message: "Title is required" });
     return;
   }
 
-  const task = createTask(title, description, Boolean(completed));
+  const task = createTask(
+    title,
+    description,
+    Boolean(completed),
+    typeof latitude === "number" ? latitude : undefined,
+    typeof longitude === "number" ? longitude : undefined
+  );
   res.status(201).json(task);
 });
 
 app.put("/tasks/:id", authMiddleware, (req: Request, res: Response) => {
   const id = Number(req.params.id);
-  const { title, description, completed } = req.body;
+  const { title, description, completed, latitude, longitude } = req.body;
 
-  const updated = updateTask(id, { title, description, completed });
+  const updated = updateTask(id, {
+    title,
+    description,
+    completed,
+    latitude: typeof latitude === "number" ? latitude : undefined,
+    longitude: typeof longitude === "number" ? longitude : undefined,
+  });
 
   if (!updated) {
     res.status(404).json({ message: "Task not found" });
@@ -98,6 +112,8 @@ app.post("/tasks/seed", authMiddleware, (req: Request, res: Response) => {
       description:
         typeof t.description === "string" ? t.description : undefined,
       completed: typeof t.completed === "boolean" ? t.completed : false,
+      latitude: typeof t.latitude === "number" ? t.latitude : undefined,
+      longitude: typeof t.longitude === "number" ? t.longitude : undefined,
     }));
 
   const result = replaceAllTasks(normalized);

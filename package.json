@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
+    "ejercicio1": "ts-node-dev  ejercicios/isPalindrome.ts",
+    "ejercicio2": "ts-node-dev  ejercicios/listadeduplicados.ts",
+    "ejercicio3": "ts-node-dev  ejercicios/rotateMatrix.ts",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js"
